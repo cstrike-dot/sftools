@@ -1,0 +1,36 @@
+name: Build Project
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Set up Visual Studio Build Tools
+        uses: microsoft/setup-msbuild@v1
+        with:
+          vs-version: 'latest'
+
+      - name: Restore dependencies
+        run: |
+          nuget restore YourSolution.sln
+
+      - name: Build project
+        run: |
+          msbuild YourSolution.sln /p:Configuration=Release
+
+      - name: Archive Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: my-build-artifacts
+          path: path/to/output
